@@ -15,6 +15,7 @@
 ### 🐛 Bug fixes
 
 - support usePreventRemove in web modal ([#40262](https://github.com/expo/expo/pull/40262) by [@Ubax](https://github.com/Ubax))
+- Wrap native tabs navigator with NavigationContent ([#40229](https://github.com/expo/expo/pull/40229) by [@Ubax](https://github.com/Ubax))
 
 ### 💡 Others
 
