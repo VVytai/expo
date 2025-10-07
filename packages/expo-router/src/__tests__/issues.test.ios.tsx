@@ -87,14 +87,22 @@ it('should not render generated screens', async () => {
   expect(screen.getByTestId('index')).toBeVisible();
   expect(screen.queryByTestId('inner-index')).toBeNull();
   expect(screen.queryByTestId('inner-second')).toBeNull();
+  expect(layoutMount).toHaveBeenCalledTimes(1);
+  expect(innerLayoutMount).toHaveBeenCalledTimes(0);
+  expect(innerIndexMount).toHaveBeenCalledTimes(0);
+  expect(innerSecondMount).toHaveBeenCalledTimes(0);
 
-  expect(() => {
-    act(() => {
-      router.push('/inner');
-    });
-  }).toThrow(
-    'Attempted to navigate before mounting the Root Layout component. Ensure the Root Layout component is rendering a Slot, or other navigator on the first render.'
-  );
+  act(() => {
+    router.push('/inner');
+  });
+
+  expect(screen.queryByTestId('index')).toBeNull();
+  expect(screen.queryByTestId('inner-index')).toBeNull();
+  expect(screen.getByTestId('inner-second')).toBeVisible();
+  expect(layoutMount).toHaveBeenCalledTimes(1);
+  expect(innerLayoutMount).toHaveBeenCalledTimes(1);
+  expect(innerIndexMount).toHaveBeenCalledTimes(1);
+  expect(innerSecondMount).toHaveBeenCalledTimes(1);
 });
 
 it('should not render generated screens', async () => {
