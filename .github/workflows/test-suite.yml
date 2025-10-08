@@ -22,12 +22,16 @@ on:
       - '!packages/@expo/cli/**'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  # When pushing main branch, we should limit single concurrency with pr-labeler workflow to prevent multiple fingerprints being updated at the same time
+  group: ${{ github.event_name != 'pull_request' && 'fingerprint-main' || format('{0}-{1}-{2}', github.workflow, github.event_name, github.ref) }}
   cancel-in-progress: true
 
 jobs:
   ios-build:
     runs-on: macos-15
+    permissions:
+      # REQUIRED: Allow updating fingerprint in acton caches
+      actions: write
     steps:
       - name: 👀 Checkout
         uses: actions/checkout@v5
@@ -182,6 +186,9 @@ jobs:
 
   android-build:
     runs-on: ubuntu-24.04
+    permissions:
+      # REQUIRED: Allow updating fingerprint in acton caches
+      actions: write
     env:
       ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
       GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx4096m -XX:MaxMetaspaceSize=4096m"
