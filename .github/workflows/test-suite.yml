@@ -236,6 +236,7 @@ jobs:
         with:
           working-directory: apps/bare-expo
           previous-git-commit: ${{ steps.base-commit.outputs.base-commit }}
+          fingerprint-state-output-file: ${{ runner.temp }}/fingerprint-state.json
       - name: 🏗️ Build/Repack Android project (bare-expo)
         uses: expo/actions/repack-app-artifact@kudo/repack-fix-2
         timeout-minutes: 35
