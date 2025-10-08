@@ -83,6 +83,7 @@ jobs:
         with:
           working-directory: apps/bare-expo
           previous-git-commit: ${{ steps.base-commit.outputs.base-commit }}
+          fingerprint-state-output-file: ${{ runner.temp }}/fingerprint-state.json
       - name: 🏗️ Build/Repack iOS project (bare-expo)
         uses: expo/actions/repack-app-artifact@kudo/repack-fix-1
         timeout-minutes: 55
@@ -93,17 +94,15 @@ jobs:
           RCT_USE_RN_DEP: 1
         with:
           platform: ios
+          fingerprint-state-file: ${{ runner.temp }}/fingerprint-state.json
           working-directory: apps/bare-expo
-          fingerprint-diff: ${{ steps.fingerprint.outputs.fingerprint-diff }}
-          current-git-commit: ${{ steps.fingerprint.outputs.current-git-commit }}
-          current-fingerprint: ${{ steps.fingerprint.outputs.current-fingerprint }}
           build-command: |
             pushd ios
             pod env
             pod install
             popd
             ./scripts/start-ios-e2e-test.ts --build
-          build-output: ios/build/BareExpo.app
+          build-output: apps/bare-expo/ios/build/BareExpo.app
           artifact-name: bare-expo-ios-builds
       - name: 🔔 Notify on Slack
         uses: 8398a7/action-slack@v3
@@ -245,10 +244,8 @@ jobs:
           NODE_ENV: production
         with:
           platform: android
+          fingerprint-state-file: ${{ runner.temp }}/fingerprint-state.json
           working-directory: apps/bare-expo
-          fingerprint-diff: ${{ steps.fingerprint.outputs.fingerprint-diff }}
-          current-git-commit: ${{ steps.fingerprint.outputs.current-git-commit }}
-          current-fingerprint: ${{ steps.fingerprint.outputs.current-fingerprint }}
           build-command: |
             ./scripts/start-android-e2e-test.ts --build
           build-output: apps/bare-expo/android/app/build/outputs/apk
